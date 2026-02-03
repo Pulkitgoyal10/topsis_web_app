@@ -33,6 +33,13 @@ It is widely used in:
 
 ---
 
+##Web app interface
+
+<img width="852" height="705" alt="image" src="https://github.com/user-attachments/assets/ed30f927-c0b3-41f1-9425-4720ef6472fc" />
+
+
+---
+
 ## 📥 Installation (Local Run)
 
 ```bash
