@@ -37,6 +37,11 @@ It is widely used in:
 
 <img width="852" height="705" alt="image" src="https://github.com/user-attachments/assets/ed30f927-c0b3-41f1-9425-4720ef6472fc" />
 
+---
+
+## topsis_web_app Link
+
+https://topsiswebapp-gbss48qsgadhueet3acjfd.streamlit.app/
 
 ---
 
