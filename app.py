@@ -22,8 +22,8 @@ def is_valid_email(email):
 
 # ---------------- EMAIL SENDING ----------------
 def send_email(file_path, receiver_email):
-    sender_email = "pgoyal3_be23@thapar.edu"        # 🔴 Replace with your Gmail
-    app_password = "deikfmjbhbuekdyp"           # 🔴 Replace with App Password
+    sender_email = os.environ["EMAIL"]        # 🔴 Replace with your Gmail
+    app_password = os.environ["PASSWORD"]          # 🔴 Replace with App Password
 
     msg = EmailMessage()
     msg["Subject"] = "Your TOPSIS Result File"
