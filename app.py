@@ -22,8 +22,12 @@ def is_valid_email(email):
 
 # ---------------- EMAIL SENDING ----------------
 def send_email(file_path, receiver_email):
-    sender_email = os.environ["EMAIL"]        # 🔴 Replace with your Gmail
-    app_password = os.environ["PASSWORD"]          # 🔴 Replace with App Password
+    sender_email = os.environ.get("EMAIL")
+    app_password = os.environ.get("PASSWORD")
+
+    if not sender_email or not app_password:
+        st.error("Email credentials not configured in Streamlit Secrets.")
+        return
 
     msg = EmailMessage()
     msg["Subject"] = "Your TOPSIS Result File"
@@ -32,14 +36,21 @@ def send_email(file_path, receiver_email):
     msg.set_content("Please find attached the TOPSIS result file.")
 
     with open(file_path, "rb") as f:
-        msg.add_attachment(f.read(),
-                           maintype="application",
-                           subtype="octet-stream",
-                           filename="result.csv")
+        msg.add_attachment(
+            f.read(),
+            maintype="application",
+            subtype="octet-stream",
+            filename="result.csv"
+        )
 
-    with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
-        server.login(sender_email, app_password)
-        server.send_message(msg)
+    try:
+        with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
+            server.login(sender_email, app_password)
+            server.send_message(msg)
+    except smtplib.SMTPAuthenticationError:
+        st.error("Gmail login failed. Check App Password in Streamlit Secrets.")
+    except Exception as e:
+        st.error(f"Email sending failed: {e}")
 
 # ---------------- MAIN PROCESS ----------------
 if uploaded_file:
@@ -47,7 +58,6 @@ if uploaded_file:
 
     if st.button("Run TOPSIS"):
         try:
-            # Save file with correct extension
             suffix = os.path.splitext(uploaded_file.name)[1]
             with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as tmp:
                 tmp.write(uploaded_file.read())
@@ -55,18 +65,14 @@ if uploaded_file:
 
             output_path = input_path.replace(suffix, "_result.csv")
 
-            # Run your PyPI TOPSIS package
             topsis(input_path, weights, impacts, output_path)
 
-            # Display result
             result_df = pd.read_csv(output_path)
             st.dataframe(result_df)
 
-            # Download option
             with open(output_path, "rb") as f:
                 st.download_button("Download Result File", f, "topsis_result.csv")
 
-            # Send Email
             if email:
                 if is_valid_email(email):
                     send_email(output_path, email)
